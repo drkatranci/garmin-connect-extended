@@ -1,4 +1,24 @@
-# garmin-connect
+# garmin-connect-extended
+
+> Extended version with enhanced golf shot data support
+
+## About This Fork
+
+This is an extended version of the original `garmin-connect` library with additional golf functionality:
+
+-   ✅ **Enhanced Golf Data**: Access detailed shot-by-shot golf data including club selection, distances, and accuracy metrics
+-   ✅ **Shot Analysis**: Retrieve individual shot information for specific holes or entire scorecards
+-   ✅ **Extended API Coverage**: Additional Garmin Connect golf endpoints for comprehensive golf analytics
+
+## Extended Features
+
+### Golf Shot Data
+
+-   `getGolfScorecardHole()` - Retrieve detailed shot data for specific holes in a golf scorecard
+-   Access to club usage, shot distances, accuracy metrics, and shot coordinates
+-   Support for filtering by specific hole numbers
+
+---
 
 ## v1.6.0 refactor
 
@@ -25,7 +45,15 @@ All of above work inspired by [https://github.com/matin/garth](https://github.co
 
 ---
 
-A powerful JavaScript library for connecting to Garmin Connect for sending and receiving health and workout data. It comes with some predefined methods to get and set different kinds of data for your Garmin account, but also have the possibility to make [custom requests](#custom-requests) `GET`, `POST` and `PUT` are currently supported. This makes it easy to implement whatever may be missing to suite your needs.
+A powerful JavaScript library for connecting to Garmin Connect for sending and receiving health and workout data. This **extended version** includes enhanced golf functionality for detailed shot analysis and scorecard data. It comes with some predefined methods to get and set different kinds of data for your Garmin account, but also have the possibility to make [custom requests](#custom-requests) `GET`, `POST` and `PUT` are currently supported. This makes it easy to implement whatever may be missing to suite your needs.
+
+## Golf Enhancement Features
+
+This extended version adds comprehensive golf shot tracking capabilities:
+
+-   **Detailed Shot Data**: Access individual shot information including club selection, distances, and accuracy
+-   **Hole-by-Hole Analysis**: Retrieve shot data for specific holes or entire rounds
+-   **Enhanced Golf APIs**: Additional endpoints for comprehensive golf performance analysis
 
 ## Prerequisites
 
@@ -39,6 +67,28 @@ This library will require you to add a configuration file to your project root c
 ```
 
 ## How to install
+
+### From GitHub (Recommended for Extended Features)
+
+```shell
+$ npm install github:drkatranci/garmin-connect-extended
+```
+
+### Alternative Installation Methods
+
+```shell
+# Direct GitHub install
+$ npm install drkatranci/garmin-connect-extended
+
+# Or add to package.json
+{
+  "dependencies": {
+    "garmin-connect": "github:drkatranci/garmin-connect-extended"
+  }
+}
+```
+
+### Original Package (Without Golf Extensions)
 
 ```shell
 $ npm install garmin-connect
@@ -59,6 +109,43 @@ const userProfile = await GCClient.getUserProfile();
 ```
 
 Now you can check `userProfile.userName` to verify that your login was successful.
+
+## Golf Shot Data Example (Extended Feature)
+
+```js
+const { GarminConnect } = require('garmin-connect');
+
+const GCClient = new GarminConnect({
+    username: 'my.email@example.com',
+    password: 'MySecretPassword'
+});
+
+await GCClient.login();
+
+// Get golf summary to find scorecard IDs
+const golfSummary = await GCClient.getGolfSummary();
+console.log('Available scorecards:', golfSummary);
+
+// Get detailed shot data for a specific scorecard
+const scorecardId = '12345'; // Replace with actual scorecard ID
+const shotData = await GCClient.getGolfScorecardHole(scorecardId);
+console.log('All shot data:', shotData);
+
+// Get shot data for specific holes only
+const specificHoles = await GCClient.getGolfScorecardHole(scorecardId, '1,2,3');
+console.log('Holes 1-3 shot data:', specificHoles);
+
+// Example: Analyze driver usage
+shotData.holes?.forEach((hole) => {
+    hole.shots?.forEach((shot) => {
+        if (shot.club === 'Driver') {
+            console.log(
+                `Hole ${hole.holeNumber}: Driver shot ${shot.distance} yards`
+            );
+        }
+    });
+});
+```
 
 ## Reusing your session(since v1.6.0)
 
@@ -454,6 +541,47 @@ Retrieves golf scorecard data for a specific scorecard.
 ```js
 const scorecardId = 123; // Replace with the desired scorecard ID
 const golfScorecard = await GCClient.getGolfScorecard(scorecardId);
+```
+
+### `getGolfScorecardHole(scorecardId: string, holeNumbers?: string): Promise<any>`
+
+Retrieves detailed golf shot data for specific holes in a scorecard. This method provides access to individual shot information including club used, distance, accuracy, and other shot metrics.
+
+#### Parameters:
+
+-   `scorecardId` (string): Identifier for the desired golf scorecard.
+-   `holeNumbers` (string, optional): Comma-separated list of hole numbers to retrieve (e.g., "1,2,3"). If not provided, returns data for all holes.
+
+#### Returns:
+
+-   `Promise<any>`: A Promise that resolves to the golf shot data containing detailed information about each shot on the specified holes.
+
+#### Example:
+
+```js
+// Get shot data for all holes in a scorecard
+const allShotData = await GCClient.getGolfScorecardHole('12345');
+
+// Get shot data for specific holes
+const specificHoles = await GCClient.getGolfScorecardHole('12345', '1,2,3');
+
+// Example response structure:
+// {
+//   holes: [
+//     {
+//       holeNumber: 1,
+//       shots: [
+//         {
+//           shotNumber: 1,
+//           club: "Driver",
+//           distance: 280,
+//           accuracy: "Fairway",
+//           coordinates: { lat: 40.123, lng: -74.456 }
+//         }
+//       ]
+//     }
+//   ]
+// }
 ```
 
 ### `getHeartRate(date?: Date): Promise<HeartRate>`
