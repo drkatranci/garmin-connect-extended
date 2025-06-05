@@ -521,6 +521,32 @@ export default class GarminConnect {
         }
     }
 
+    async getGolfScorecardHole(
+        scorecardId: string,
+        holeNumbers?: string
+    ): Promise<any> {
+        try {
+            const params: any = {};
+            if (holeNumbers) {
+                params['hole-numbers'] = holeNumbers;
+            }
+
+            const url = this.url.GOLF_SCORECARD_HOLE.replace(
+                '{{id}}',
+                scorecardId
+            );
+            const golfHole = await this.client.get(url, { params });
+
+            if (!golfHole) {
+                throw new Error('Invalid or empty golf hole data response.');
+            }
+
+            return golfHole;
+        } catch (error: any) {
+            throw new Error(`Error in getGolfScorecardHole: ${error.message}`);
+        }
+    }
+
     async getHeartRate(date = new Date()): Promise<HeartRate> {
         try {
             const dateString = toDateString(date);

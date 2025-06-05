@@ -1,7 +1,7 @@
 {
-    "name": "garmin-connect",
-    "version": "1.6.2",
-    "description": "Makes it simple to interface with Garmin Connect to get or set any data point",
+    "name": "garmin-connect-extended",
+    "version": "1.6.2-extended.1",
+    "description": "Makes it simple to interface with Garmin Connect to get or set any data point - Extended with golf shot data support",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "scripts": {

@@ -86,9 +86,6 @@ export class UrlClass {
     get GOLF_SCORECARD_DETAIL() {
         return `${this.GC_API}/gcs-golfcommunity/api/v2/scorecard/detail`;
     }
-    get GOLF_SCORECARD_HOLE() {
-        return `${this.GC_API}/gcs-golfcommunity/api/v2/shot/scorecard/{{id}}/hole`;
-    }
     get DAILY_HEART_RATE() {
         return `${this.GC_API}/wellness-service/wellness/dailyHeartRate`;
     }
